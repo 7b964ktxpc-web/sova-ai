@@ -56,7 +56,7 @@ export function Sidebar() {
       </ScrollArea>
 
       <div className="p-2 border-t">
-        <Link href="/auth/login">
+        <Link href="/login">
           <Button variant="ghost" className={cn("w-full justify-start text-destructive", collapsed && "justify-center px-2")}>
             <LogOut className="h-4 w-4" />
             {!collapsed && <span className="ml-2">Выйти</span>}

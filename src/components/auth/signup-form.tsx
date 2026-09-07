@@ -56,7 +56,7 @@ export function SignupForm() {
         Зарегистрироваться
       </Button>
       <p className="text-center text-sm text-muted-foreground">
-        Уже есть аккаунт? <a href="/auth/login" className="text-primary hover:underline">Войти</a>
+        Уже есть аккаунт? <a href="/login" className="text-primary hover:underline">Войти</a>
       </p>
     </form>
   )

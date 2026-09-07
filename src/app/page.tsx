@@ -21,8 +21,8 @@ export default function Home() {
             <span className="font-bold text-xl">SOVA AI</span>
           </div>
           <nav className="flex items-center gap-4">
-            <Link href="/auth/login"><Button variant="ghost">Войти</Button></Link>
-            <Link href="/auth/signup"><Button>Начать бесплатно</Button></Link>
+            <Link href="/login"><Button variant="ghost">Войти</Button></Link>
+            <Link href="/signup"><Button>Начать бесплатно</Button></Link>
           </nav>
         </div>
       </header>
@@ -36,8 +36,8 @@ export default function Home() {
             Опишите задачу обычными словами — SOVA AI сам создаст конфигурацию, подключит знания и запустит помощника.
           </p>
           <div className="flex items-center justify-center gap-4">
-            <Link href="/auth/signup"><Button size="lg" className="text-base px-8">Начать бесплатно</Button></Link>
-            <Link href="/auth/login"><Button variant="outline" size="lg" className="text-base px-8">Уже есть аккаунт</Button></Link>
+            <Link href="/signup"><Button size="lg" className="text-base px-8">Начать бесплатно</Button></Link>
+            <Link href="/login"><Button variant="outline" size="lg" className="text-base px-8">Уже есть аккаунт</Button></Link>
           </div>
         </section>
 
@@ -61,7 +61,7 @@ export default function Home() {
         <section className="container mx-auto px-4 py-24 text-center">
           <h2 className="text-3xl font-bold mb-4">Готовы создать помощника?</h2>
           <p className="text-muted-foreground mb-8">Начните бесплатно, без кредитной карты</p>
-          <Link href="/auth/signup"><Button size="lg" className="px-8">Создать аккаунт</Button></Link>
+          <Link href="/signup"><Button size="lg" className="px-8">Создать аккаунт</Button></Link>
         </section>
       </main>
 

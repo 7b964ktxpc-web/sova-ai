@@ -89,7 +89,7 @@ export function LoginForm() {
         Войти через Google
       </Button>
       <p className="text-center text-sm text-muted-foreground">
-        Нет аккаунта? <a href="/auth/signup" className="text-primary hover:underline">Зарегистрироваться</a>
+        Нет аккаунта? <a href="/signup" className="text-primary hover:underline">Зарегистрироваться</a>
       </p>
     </form>
   )
