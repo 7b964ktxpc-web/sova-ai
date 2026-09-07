@@ -242,6 +242,52 @@ export default function TelegramPage() {
                   </div>
                 </CardContent>
               </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>OpenRouter — бесплатные ИИ</CardTitle>
+                  <CardDescription>
+                    Доступные бесплатные модели для помощников
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2 text-sm text-gray-600">
+                    <p>В проекте уже добавлен ключ OpenRouter. Бесплатные модели:</p>
+                    <ul className="list-disc list-inside space-y-1">
+                      <li>meta-llama/llama-3.1-8b-instruct:free</li>
+                      <li>google/gemini-2.0-flash-exp:free</li>
+                      <li>mistralai/mistral-7b-instruct:free</li>
+                      <li>huggingfaceh4/zephyr-7b-beta:free</li>
+                      <li>gryphe/llama-3.1-8b-gpt-4o:free</li>
+                      <li>inclusionai/ling-3.0-flash-sante:free</li>
+                      <li>inclusionai/ling-3.0-flash-fin:free</li>
+                      <li>liquid/lfm-2.5-embedding-350m:free</li>
+                      <li>dots-studio/dots-3-note-preview:free</li>
+                      <li>deepgram/flux-tts:free</li>
+                      <li>liquid/lfm-2.5-2.6b:free</li>
+                      <li>nvidia/nemotron-3.5-lightning:free</li>
+                      <li>thinkingmachines/inkling-small:free</li>
+                      <li>fish-audio/s2.1-pro-free:free</li>
+                      <li>poolside/laguna-s-2.1:free</li>
+                      <li>thinkingmachines/inkling:free</li>
+                      <li>nvidia/nemotron-3-embed-1b:free</li>
+                      <li>poolside/laguna-xs-2.1:free</li>
+                      <li>cohere/north-mini-code:free</li>
+                      <li>nvidia/llama-nemotron-rerank-vl-1b-v2:free</li>
+                      <li>nvidia/nemotron-3.5-content-safety:free</li>
+                      <li>nvidia/nemotron-3.5-ultra-550b-a55b:free</li>
+                      <li>nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free</li>
+                      <li>google/gemma-4-26b-a4b-it:free</li>
+                      <li>google/gemma-4-31b-it:free</li>
+                      <li>nvidia/nemotron-3-super-120b-a12b:free</li>
+                      <li>nvidia/llama-nemotron-embed-vl-1b-v2:free</li>
+                    </ul>
+                    <p className="pt-2">
+                      Их можно выбирать в настройках ассистента как провайдера модели.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </main>
