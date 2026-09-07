@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { LayoutDashboard, Users, Settings, MessageSquare, BarChart3, Shield } from 'lucide-react'
+import { LayoutDashboard, Users, Settings, MessageSquare, BarChart3, Shield, Code2 } from 'lucide-react'
 
 const navigation = [
   { name: 'Обзор', href: '/admin', icon: LayoutDashboard },
@@ -11,6 +11,7 @@ const navigation = [
   { name: 'Помощники', href: '/admin/assistants', icon: MessageSquare },
   { name: 'Аналитика', href: '/admin/analytics', icon: BarChart3 },
   { name: 'Настройки', href: '/admin/settings', icon: Settings },
+  { name: 'Интеграции', href: '/admin/examples', icon: Code2 },
 ]
 
 export default function AdminSidebar() {
