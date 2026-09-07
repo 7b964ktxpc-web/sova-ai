@@ -1,9 +1,19 @@
-<!-- BEGIN:nextjs-agent-rules -->
+# Передача любому AI coding agent
 
-# This is NOT the Next.js you know
+Сначала прочитайте README, ARCHITECTURE, FEATURES, QA и SECURITY. Не называйте приложение production-ready без проверок.
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+Правила проекта:
 
-This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+- Нет обязательных платных AI, карт, шаблонов и баз. Новые платные подключения только после отдельного решения владельца.
+- Не придумывать вакансии, адреса, зарплату, контакты, работодателей и координаты. Unknown = null.
+- Любое Telegram-сообщение сначала сохраняется целиком. Дедупликация не теряет связи с источниками.
+- Новый provider реализует интерфейс, а не переписывает UI.
+- Secrets только server env. Никогда не импортировать service-db в client component.
+- Обновление роли, статуса, цены и платежа проверять на сервере и в SQL. Проверка React-кнопки не защита.
+- SQL migrations добавлять последовательно, не переписывать уже применённую историю.
+- Изменения проверять `typecheck`, unit, integration, E2E. Указывать пропуски, а не объявлять их успехом.
+- Контакты и карты должны оставаться прямыми ссылками, без встроенных карт и платных SDK.
+- Не ставить fake backend вместо отсутствующего подключения. Показывать честное состояние конфигурации.
+- Тестовые фикстуры создавать только в отдельной Supabase-базе. Публичный seed не содержит объявлений.
 
-<!-- END:nextjs-agent-rules -->
+Ближайший шаг не новый дизайн: установить зависимости в сетевой среде, проверить TypeScript/Next, применить SQL в тестовом Supabase и исправить ошибки реального запуска. После этого пройти основные пользовательские потоки.

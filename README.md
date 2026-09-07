@@ -1,148 +1,67 @@
-# SOVA AI
+# Подработка 154
 
-**Конструктор персональных AI-помощников**
+Исходники MVP v0.1 для поиска подработок, первый город: Новосибирск.
 
-SOVA AI — это современный SaaS-сервис, который позволяет создавать AI-помощников без знания программирования. Опишите задачу обычными словами, и SOVA AI сам создаст конфигурацию, подключит знания и запустит помощника.
+**Статус: архив для запуска и интеграционной проверки, не подтверждённый production-релиз.**
+В этой среде выполнены 42 unit-теста, проверка синтаксиса TypeScript и сборка связей локальных модулей. Полный `next build`, типизация с реальными зависимостями, миграции PostgreSQL, интеграционные и браузерные тесты здесь не запускались: нет установленных Next/Supabase/PostgreSQL и доступа в интернет из среды выполнения. Не выдавайте это за опубликованный и полностью проверенный сервис.
 
-## Возможности
+## Начать
 
-- Создание AI-помощников на основе естественного языка
-- Автоматическая генерация конфигурации с помощью AI
-- База знаний с поддержкой PDF, DOCX, TXT, Markdown и URL
-- RAG (Retrieval Augmented Generation) для ответов на основе документов
-- Интеграция с Telegram
-- Встроенный тестовый чат
-- Управление версиями конфигурации
-- Аналитика и отслеживание использования
-- Поддержка множества AI-провайдеров (OpenAI, Anthropic, Google, Groq, OpenRouter)
-- Многопользовательский SaaS с тарифами
+1. Распакуйте архив на компьютере. С телефона можно создать аккаунты, но для этого архива потребуется среда Node.js с терминалом.
+2. Откройте [SETUP.md](SETUP.md). Создайте отдельный Supabase-проект и настройте `.env.local`.
+3. Примените SQL-миграции 001…008 и `supabase/seed.sql`.
+4. Установите зависимости и запустите сайт и worker.
+5. Пройдите [QA.md](QA.md) перед доступом реальных пользователей.
 
-## Технологический стек
-
-- **Frontend**: Next.js 14, TypeScript, Tailwind CSS
-- **Backend**: Next.js API Routes, Server Actions
-- **Database**: PostgreSQL с pgvector
-- **Auth**: Supabase Auth
-- **Storage**: Supabase Storage
-- **AI**: OpenAI, Anthropic, Google Gemini, Groq, OpenRouter
-- **Deployment**: Vercel-ready
-
-## Структура проекта
-
-```
-sova-ai/
-├── app/
-│   ├── (marketing)/          # Landing page
-│   ├── (auth)/               # Auth pages
-│   ├── dashboard/            # Dashboard
-│   ├── assistant/            # Assistant management
-│   ├── admin/                # Admin panel
-│   └── api/                  # API routes
-├── components/
-│   ├── ui/                   # Reusable UI components
-│   ├── dashboard/            # Dashboard components
-│   ├── assistant/            # Assistant components
-│   ├── onboarding/           # Onboarding components
-│   └── chat/                 # Chat components
-├── lib/
-│   ├── ai/                   # AI provider abstraction
-│   ├── auth/                 # Authentication utilities
-│   ├── database/             # Database queries
-│   ├── knowledge/            # Knowledge base processing
-│   ├── telegram/             # Telegram integration
-│   ├── usage/                # Usage tracking
-│   └── security/             # Security utilities
-├── types/                    # TypeScript type definitions
-├── hooks/                    # Custom React hooks
-├── services/                 # External services
-├── supabase/
-│   ├── migrations/           # Database migrations
-│   └── seed/                 # Seed data
-├── docs/                     # Documentation
-├── tests/                    # Tests
-└── public/                   # Static assets
-```
-
-## Локальный запуск
-
-### Требования
-
-- Node.js 18+
-- npm или yarn
-- Supabase account
-
-### Установка
-
-1. Клонируйте репозиторий:
-```bash
-git clone https://github.com/your-org/sova-ai.git
-cd sova-ai
-```
-
-2. Установите зависимости:
-```bash
+```sh
 npm install
-```
-
-3. Настройте переменные окружения:
-```bash
-cp .env.example .env.local
-```
-
-Заполните `.env.local` вашими значениями.
-
-4. Настройте Supabase:
-   - Создайте новый проект в Supabase
-   - Выполните миграции из `supabase/migrations/`
-   - Добавьте `pgvector` extension в Supabase SQL Editor
-
-5. Запустите разработческий сервер:
-```bash
+npm run typecheck
+npm test
 npm run dev
+# В другом терминале:
+npm run worker
 ```
 
-Откройте [http://localhost:3000](http://localhost:3000) в браузере.
+Используйте Node.js 22.18+ и npm. Секреты не отправляйте в чаты, не коммитьте `.env.local`.
 
-## Переменные окружения
+## Что реализовано в коде
 
-```env
-# Supabase
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
+- Next.js App Router, React, TypeScript, Tailwind 4; кнопка и инфраструктура shadcn/ui без платных шаблонов.
+- SSR-каталог, русскоязычный полнотекстовый поиск, категории, минимальная оплата за смену, фильтры даты/адреса/источника/оплаты сразу, пагинация.
+- Детальная страница, реальные контактные ссылки, ссылки на 2ГИС и Яндекс через единый `lib/maps.ts`. Нет SDK, тайлов, координат или геокодирования.
+- Supabase Auth: вход, регистрация, подтверждение email, восстановление пароля; один аккаунт с несколькими ролями.
+- Избранное, сохранённые поиски, уведомления в кабинете, Web Push с добровольным включением.
+- Профиль работодателя, загрузка JPEG/PNG, создание/редактирование черновика, предпросмотр, отправка на модерацию, статистика событий.
+- Админка: модерация, справочники, источники, цены, лимиты, роли, журналы, повторная обработка очереди.
+- Ручной импорт Telegram и приём новых постов через Bot API webhook для каналов, доступных боту.
+- Оригиналы сообщений сохраняются до разбора; консервативный парсер без платного AI отправляет кандидатов на ручную проверку.
+- Строгое устранение одинаковых нормализованных объявлений с сохранением связей со всеми источниками.
+- PostgreSQL-очередь с арендой заданий, повторными попытками и отдельным worker; автоматическое истечение вакансий.
+- Продукты, заказы, пакеты и ограниченные по времени права размещений; подписанный идемпотентный sandbox-webhook и тестовый возврат.
 
-# AI Providers
-OPENAI_API_KEY=
-ANTHROPIC_API_KEY=
-GOOGLE_AI_API_KEY=
-OPENROUTER_API_KEY=
-GROQ_API_KEY=
+Точная матрица ограничений находится в [FEATURES.md](FEATURES.md). «Есть код» не означает «проверено в реальном окружении».
 
-# Telegram
-TELEGRAM_BOT_TOKEN=
-TELEGRAM_WEBHOOK_SECRET=
+## Подключения
 
-# App
-NEXT_PUBLIC_APP_URL=http://localhost:3000
+| Компонент | Инструкция | Обязателен для первого запуска |
+|---|---|---|
+| Supabase PostgreSQL/Auth/Storage | [SETUP.md](SETUP.md) | Да |
+| SMTP для Auth | [SETUP.md](SETUP.md) | Да для открытой регистрации через email |
+| Telegram | [TELEGRAM.md](TELEGRAM.md) | Нет, можно начать с работодателей и ручного импорта |
+| Worker | [DEPLOYMENT.md](DEPLOYMENT.md) | Да для разбора, истечения статусов и уведомлений |
+| Web Push | [SETUP.md](SETUP.md) | Нет, кабинет работает без Push |
+| Платежи | [PAYMENTS.md](PAYMENTS.md) | Нет, в архиве только sandbox |
 
-# Encryption
-ENCRYPTION_KEY=
+Первый администратор: зарегистрируйтесь, подтвердите email, возьмите UUID пользователя в Supabase Authentication → Users:
+
+```sh
+npm run admin -- AUTH_USER_UUID
 ```
 
-## Деплой
+Это локальная привилегированная команда, не публичный HTTP endpoint. Все переменные перечислены в `.env.example`; назначение описано в SETUP.
 
-### Vercel
+## Документация
 
-1. Подключите репозиторий к Vercel
-2. Добавьте переменные окружения в Vercel Dashboard
-3. Деплой произойдет автоматически
+[ARCHITECTURE.md](ARCHITECTURE.md) · [SETUP.md](SETUP.md) · [TELEGRAM.md](TELEGRAM.md) · [PAYMENTS.md](PAYMENTS.md) · [DEPLOYMENT.md](DEPLOYMENT.md) · [SECURITY.md](SECURITY.md) · [QA.md](QA.md) · [FEATURES.md](FEATURES.md) · [AGENTS.md](AGENTS.md)
 
-### Railway
-
-1. Подключите репозиторий к Railway
-2. Добавьте переменные окружения
-3. Запустите деплой
-
-## Лицензия
-
-MIT
+В репозитории нет вакансий-примеров, вымышленных работодателей или платных AI-ключей. Seed содержит только справочники, настройки и выключенные платные продукты с редактируемыми примерами цен.
