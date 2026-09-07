@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { createServiceRoleClient } from '@/lib/database/supabase'
 
-const publicPaths = ['/', '/auth/login', '/auth/signup', '/auth/forgot-password', '/auth/callback', '/api/telegram/webhook']
+const publicPaths = ['/', '/auth/login', '/auth/signup', '/auth/forgot-password', '/auth/callback', '/auth/telegram-callback', '/api/telegram/webhook']
 
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname

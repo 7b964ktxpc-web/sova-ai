@@ -1,4 +1,4 @@
-import { createServiceRoleClient } from '@/lib/database/supabase'
+import { createClientComponentClient } from '@/lib/database/supabase'
 
 export interface Session {
   user: {
@@ -14,7 +14,7 @@ export interface Session {
 }
 
 export async function signIn(email: string, password: string): Promise<Session> {
-  const supabase = createServiceRoleClient()
+  const supabase = createClientComponentClient()
   const { data, error } = await supabase.auth.signInWithPassword({ email, password })
   if (error) throw new Error(error.message)
   if (!data.session) throw new Error('Ошибка входа')
@@ -34,7 +34,7 @@ export async function signIn(email: string, password: string): Promise<Session> 
 }
 
 export async function signUp(email: string, password: string, fullName?: string): Promise<Session> {
-  const supabase = createServiceRoleClient()
+  const supabase = createClientComponentClient()
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
@@ -59,13 +59,13 @@ export async function signUp(email: string, password: string, fullName?: string)
 }
 
 export async function signOut(): Promise<void> {
-  const supabase = createServiceRoleClient()
+  const supabase = createClientComponentClient()
   const { error } = await supabase.auth.signOut()
   if (error) throw new Error(error.message)
 }
 
 export async function getSession(token: string): Promise<Session | null> {
-  const supabase = createServiceRoleClient()
+  const supabase = createClientComponentClient()
   const { data, error } = await supabase.auth.getUser(token)
   if (error || !data.user) return null
   const userEmail = data.user.email || ''
@@ -83,7 +83,7 @@ export async function getSession(token: string): Promise<Session | null> {
 }
 
 export async function resetPassword(email: string): Promise<void> {
-  const supabase = createServiceRoleClient()
+  const supabase = createClientComponentClient()
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/reset-password`,
   })
@@ -91,7 +91,7 @@ export async function resetPassword(email: string): Promise<void> {
 }
 
 export async function updatePassword(newPassword: string): Promise<void> {
-  const supabase = createServiceRoleClient()
+  const supabase = createClientComponentClient()
   const { error } = await supabase.auth.updateUser({ password: newPassword })
   if (error) throw new Error(error.message)
 }
