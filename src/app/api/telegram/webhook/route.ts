@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceRoleClient } from '@/lib/database/supabase'
-import { getAIProviderResponse } from '@/lib/ai/providers'
+import { getAIProviderResponse, getOpenRouterResponse } from '@/lib/ai/providers'
 import { withRateLimit } from '@/lib/security/rate-limit'
 
 export async function POST(request: NextRequest) {
@@ -82,7 +82,13 @@ export async function POST(request: NextRequest) {
       systemPrompt += `Запрещено:\n${configuration.forbidden_actions.map((a: string) => `• ${a}`).join("\n")}\n`
     }
 
-    const aiResponse = await generateAIResponse(text, systemPrompt, assistantId)
+    let aiResponse: string
+    try {
+      aiResponse = await generateAIResponse(text, systemPrompt, assistantId)
+    } catch (error) {
+      console.error('AI response error:', error)
+      aiResponse = 'Извините, произошла ошибка при генерации ответа. Попробуйте позже.'
+    }
 
     await supabase.from('messages').insert({
       conversation_id: conversationId,
@@ -116,20 +122,44 @@ async function generateAIResponse(message: string, systemPrompt: string, assista
       return "Извините, AI-провайдер не настроен."
     }
 
-    const response = await getAIProviderResponse(
-      (providerConfig as { provider?: string }).provider || "openai",
-      [
-        { role: "system" as const, content: systemPrompt },
-        { role: "user" as const, content: message },
-      ],
-      {
-        model: providerConfig.model,
-        temperature: providerConfig.temperature,
-        maxTokens: providerConfig.max_tokens,
-      }
-    )
+    const provider = (providerConfig as { provider?: string }).provider || 'openrouter'
 
-    return response
+    try {
+      return await getAIProviderResponse(
+        provider,
+        [
+          { role: "system" as const, content: systemPrompt },
+          { role: "user" as const, content: message },
+        ],
+        {
+          model: providerConfig.model,
+          temperature: providerConfig.temperature,
+          maxTokens: providerConfig.max_tokens,
+        }
+      )
+    } catch (primaryError) {
+      console.error('Primary AI provider error:', primaryError)
+      
+      if (provider !== 'openrouter' && process.env.OPENROUTER_API_KEY) {
+        try {
+          return await getOpenRouterResponse(
+            providerConfig.model || 'meta-llama/llama-3.1-8b-instruct:free',
+            [
+              { role: "system" as const, content: systemPrompt },
+              { role: "user" as const, content: message },
+            ],
+            {
+              temperature: providerConfig.temperature,
+              maxTokens: providerConfig.max_tokens,
+            }
+          )
+        } catch (openRouterError) {
+          console.error('OpenRouter fallback error:', openRouterError)
+        }
+      }
+      
+      throw primaryError
+    }
   } catch (error) {
     console.error("AI generation error:", error)
     return "Извините, произошла ошибка. Попробуйте позже."
@@ -140,14 +170,19 @@ async function sendTelegramMessage(chatId: string, text: string) {
   const token = process.env.TELEGRAM_BOT_TOKEN
   if (!token) return
 
-  await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      chat_id: chatId,
-      text,
-    }),
-  })
+  try {
+    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text,
+        parse_mode: 'HTML',
+      }),
+    })
+  } catch (error) {
+    console.error('Telegram send error:', error)
+  }
 }

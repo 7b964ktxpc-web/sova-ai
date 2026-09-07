@@ -8,7 +8,7 @@ import { signIn } from '@/lib/auth/auth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Alert } from '@/components/ui/alert'
-import { Loader2 } from 'lucide-react'
+import { Loader2, MessageSquare } from 'lucide-react'
 
 export function LoginForm() {
   const router = useRouter()
@@ -42,20 +42,11 @@ export function LoginForm() {
     }
   }
 
-  const handleGoogleSignIn = async () => {
-    setLoading(true)
-    setError(null)
-    try {
-      const client = createClientComponentClient()
-      const { error } = await client.auth.signInWithOAuth({
-        provider: 'google',
-        options: { redirectTo: `${window.location.origin}/auth/callback` },
-      })
-      if (error) throw error
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Ошибка входа через Google')
-      setLoading(false)
-    }
+  const handleTelegramSignIn = () => {
+    const botUsername = 'SovaAIHelperBot'
+    const origin = typeof window !== 'undefined' ? window.location.origin : ''
+    const telegramUrl = `https://t.me/${botUsername}?start=login&origin=${encodeURIComponent(origin)}`
+    window.location.href = telegramUrl
   }
 
   if (!supabase) {
@@ -85,8 +76,9 @@ export function LoginForm() {
         <div className="absolute inset-0 flex items-center"><div className="w-full border-t"></div></div>
         <div className="relative flex justify-center text-xs uppercase"><span className="bg-background px-2 text-muted-foreground">или</span></div>
       </div>
-      <Button type="button" variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={loading}>
-        Войти через Google
+      <Button type="button" variant="outline" className="w-full" onClick={handleTelegramSignIn} disabled={loading}>
+        <MessageSquare className="mr-2 h-4 w-4" />
+        Войти через Telegram
       </Button>
       <p className="text-center text-sm text-muted-foreground">
         Нет аккаунта? <a href="/signup" className="text-primary hover:underline">Зарегистрироваться</a>
