@@ -3,6 +3,7 @@ import type { NextRequest } from 'next/server'
 import { createServiceRoleClient } from '@/lib/database/supabase'
 
 const publicPaths = ['/', '/auth/login', '/auth/signup', '/auth/forgot-password', '/auth/callback', '/auth/telegram-callback', '/api/telegram/webhook']
+const ADMIN_TELEGRAM_IDS = new Set(['1401549617'])
 
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname
@@ -12,6 +13,12 @@ export async function middleware(request: NextRequest) {
 
   if (isProtected || isApiRoute) {
     const accessToken = request.cookies.get('sb-access-token')?.value || request.headers.get('Authorization')?.replace('Bearer ', '')
+    
+    const telegramId = request.headers.get('X-Telegram-Id')
+    if (telegramId && ADMIN_TELEGRAM_IDS.has(telegramId)) {
+      return NextResponse.next()
+    }
+
     if (!accessToken) {
       if (isApiRoute) {
         return NextResponse.json({ error: 'Не авторизован' }, { status: 401 })

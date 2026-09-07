@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
 
     const chatId = message.chat.id.toString()
     const userId = message.from?.id?.toString()
-    const text = message.text
+    const text = message.text.trim()
     const assistantId = process.env.TELEGRAM_DEFAULT_ASSISTANT_ID
 
     if (!assistantId) {
@@ -27,6 +27,59 @@ export async function POST(request: NextRequest) {
     }
 
     const supabase = createServiceRoleClient()
+
+    if (text.startsWith('/start')) {
+      const webAppUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://sova-ai-lemon.vercel.app'
+      
+      await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: '👋 Привет! Я — Sova AI. Нажмите кнопку ниже, чтобы открыть приложение.',
+          reply_markup: {
+            inline_keyboard: [
+              [
+                {
+                  text: '🚀 Открыть Sova AI',
+                  web_app: { url: `${webAppUrl}/telegram-webapp` },
+                },
+              ],
+            ],
+          },
+        }),
+      })
+
+      return NextResponse.json({ ok: true })
+    }
+
+    if (text === '/help') {
+      await sendTelegramMessage(chatId, 
+        '📚 Команды:\n' +
+        '/start — запустить бота\n' +
+        '/help — справка\n' +
+        '/assistants — список помощников\n' +
+        '/settings — настройки'
+      )
+      return NextResponse.json({ ok: true })
+    }
+
+    if (text === '/assistants') {
+      const { data: assistants } = await supabase
+        .from('assistants')
+        .select('id, name, description')
+        .eq('is_active', true)
+        .limit(10)
+
+      const list = (assistants || []).map(a => `• ${a.name}${a.description ? ` — ${a.description}` : ''}`).join('\n') || 'Помощники не найдены'
+      await sendTelegramMessage(chatId, `🤖 Помощники:\n\n${list}`)
+      return NextResponse.json({ ok: true })
+    }
+
+    if (text === '/settings') {
+      await sendTelegramMessage(chatId, '⚙️ Настройки доступны в веб-приложении.')
+      return NextResponse.json({ ok: true })
+    }
 
     const { data: conversations } = await supabase
       .from('conversations')
